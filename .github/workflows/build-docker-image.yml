@@ -1,10 +1,11 @@
 name: Build & Create Docker Image
 
-workflow_call:
-    inputs:
-      image-name:
-        required: true
-        type: string
+on:
+    workflow_call:
+        inputs:
+            image-name:
+                required: true
+                type: string
 
 jobs:
 
