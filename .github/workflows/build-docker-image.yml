@@ -25,7 +25,7 @@ jobs:
       - name: Verify
         run: mvn -B verify
 
-  image-build:
+  build:
     needs: verify
     runs-on: [self-hosted, X64]
     container: maven:3.8.6-jdk-11
@@ -42,19 +42,37 @@ jobs:
 
       - name: Build
         run: mvn -B clean install
-        
+      
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-boot-jar
+          path: target/*.jar
+          retention-days: 1  
+      
+  image:
+    needs: build
+    runs-on: [self-hosted, X64]
+
+    steps:
+
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: spring-boot-jar
+
       - name: Create Image
         run: |
-          mkdir target/extracted
+          mkdir -p target/extracted
           java -Djarmode=layertools -jar target/*.jar extract --destination target/extracted
           docker build -t ${{ inputs.image-name }} .
 
-          docker image tag ${{ inputs.image-name }} localhost:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
-          docker image tag ${{ inputs.image-name }} localhost:5000/${{ inputs.image-name }}:latest
+          docker image tag ${{ inputs.image-name }} 192.168.7.17:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
+          docker image tag ${{ inputs.image-name }} 192.168.7.17:5000/${{ inputs.image-name }}:latest
           
-          docker push localhost:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
-          docker push localhost:5000/${{ inputs.image-name }}:latest
+          docker push 192.168.7.17:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
+          docker push 192.168.7.17:5000/${{ inputs.image-name }}:latest
 
           docker image remove ${{ inputs.image-name }}
-          docker image remove localhost:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
-          docker image remove localhost:5000/${{ inputs.image-name }}:latest
+          docker image remove 192.168.7.17:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
+          docker image remove 192.168.7.17:5000/${{ inputs.image-name }}:latest
