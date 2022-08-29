@@ -63,8 +63,8 @@ jobs:
 
       - name: Create Image
         run: |
-          mkdir -p target/extracted
-          java -Djarmode=layertools -jar target/*.jar extract --destination target/extracted
+          mkdir -p extracted
+          java -Djarmode=layertools -jar *.jar extract --destination extracted
           docker build -t ${{ inputs.image-name }} .
 
           docker image tag ${{ inputs.image-name }} 192.168.7.17:5000/${{ inputs.image-name }}:$(date "+%Y%m%d")
