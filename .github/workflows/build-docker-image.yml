@@ -10,7 +10,10 @@ on:
 jobs:
 
   verify:
-    runs-on: [self-hosted, X64]
+    strategy:
+      matrix:
+        arch: [X64, ARM64]
+    runs-on: ${{ matrix.arch }}
     container: maven:3.8.6-jdk-11
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +30,10 @@ jobs:
 
   build:
     needs: verify
-    runs-on: [self-hosted, X64]
+    strategy:
+      matrix:
+        arch: [X64, ARM64]
+    runs-on: ${{ matrix.arch }}
     container: maven:3.8.6-jdk-11
     
     steps:
@@ -52,7 +58,10 @@ jobs:
       
   image:
     needs: build
-    runs-on: [self-hosted, X64]
+    strategy:
+      matrix:
+        arch: [X64, ARM64]
+    runs-on: ${{ matrix.arch }}
 
     steps:
 
