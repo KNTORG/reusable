@@ -88,3 +88,12 @@ jobs:
           docker image remove ${final-image-name}
           docker image remove 192.168.7.17:5000/${final-image-name}:$(date "+%Y%m%d")
           docker image remove 192.168.7.17:5000/${final-image-name}:latest
+  
+  delete-artifact:
+    needs: [build, image]
+    runs-on: [ self-hosted, X64 ]
+    steps:
+      - name: Delete Artifact
+        uses: GeekyEggo/delete-artifact@v1.0.0
+        with:
+          name: spring-boot-jar
