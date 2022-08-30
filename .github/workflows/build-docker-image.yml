@@ -73,18 +73,18 @@ jobs:
         run: |
 
           architect=$(dpkg --print-architecture)
-          final-image-name=${{ inputs.image-name }}-$architect
+          final-image-name=${{ inputs.image-name }}-${architect}
 
           mkdir -p extracted
           java -Djarmode=layertools -jar *.jar extract --destination extracted
-          docker build -t ${ final-image-name } .
+          docker build -t ${final-image-name} .
 
-          docker image tag ${ final-image-name } 192.168.7.17:5000/${ final-image-name }:$(date "+%Y%m%d")
-          docker image tag ${ final-image-name } 192.168.7.17:5000/${ final-image-name }:latest
+          docker image tag ${final-image-name} 192.168.7.17:5000/${final-image-name}:$(date "+%Y%m%d")
+          docker image tag ${final-image-name} 192.168.7.17:5000/${final-image-name}:latest
           
-          docker push 192.168.7.17:5000/${ final-image-name }:$(date "+%Y%m%d")
-          docker push 192.168.7.17:5000/${ final-image-name }:latest
+          docker push 192.168.7.17:5000/${final-image-name}:$(date "+%Y%m%d")
+          docker push 192.168.7.17:5000/${final-image-name}:latest
 
-          docker image remove ${ final-image-name }
-          docker image remove 192.168.7.17:5000/${ final-image-name }:$(date "+%Y%m%d")
-          docker image remove 192.168.7.17:5000/${ final-image-name }:latest
+          docker image remove ${final-image-name}
+          docker image remove 192.168.7.17:5000/${final-image-name}:$(date "+%Y%m%d")
+          docker image remove 192.168.7.17:5000/${final-image-name}:latest
