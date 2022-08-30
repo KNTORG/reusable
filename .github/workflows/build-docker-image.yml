@@ -48,7 +48,6 @@ jobs:
         with:
           name: spring-boot-jar
           path: target/*.jar
-          retention-days: 1  
       
   image:
     needs: build
