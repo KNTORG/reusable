@@ -10,10 +10,7 @@ on:
 jobs:
 
   verify:
-    strategy:
-      matrix:
-        arch: [X64, ARM64]
-    runs-on: ${{ matrix.arch }}
+    runs-on: [ self-hosted, X64 ]
     container: maven:3.8.6-jdk-11
     steps:
       - uses: actions/checkout@v3
@@ -30,10 +27,7 @@ jobs:
 
   build:
     needs: verify
-    strategy:
-      matrix:
-        arch: [X64, ARM64]
-    runs-on: ${{ matrix.arch }}
+    runs-on: [ self-hosted, X64 ]
     container: maven:3.8.6-jdk-11
     
     steps:
@@ -79,7 +73,7 @@ jobs:
         run: |
 
           architect=$(dpkg --print-architecture)
-          final-image-name=${{ inputs.image-name }}-${ architect }
+          final-image-name=${{ inputs.image-name }}-$architect
 
           mkdir -p extracted
           java -Djarmode=layertools -jar *.jar extract --destination extracted
